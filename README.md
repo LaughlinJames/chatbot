@@ -7,20 +7,21 @@
 ![Nodejs](https://img.shields.io/badge/Node.js-43853D?style=for-the-badge&logo=node.js&logoColor=white)
 ![Express](https://img.shields.io/badge/Express.js-404D59?style=for-the-badge)
 ![Openai](https://img.shields.io/badge/Openai-404D59?style=for-the-badge)
+![Adobe Firefly](https://img.shields.io/badge/Adobe-Firefly-FE0F00?logo=adobe&logoColor=white)
 
 ## Description
 
-This is a chat bot built with Node.js and Express, integrated with OpenAI's API to provide natural language processing capabilities. The bot can engage in conversations with users, answer questions, and provide responses based on the context of the conversation.
+This is a chat bot built with Node.js and Express, integrated with OpenAI's API to provide natural language processing capabilities and Adobe's Firefly API for image generation. The bot can engage in conversations with users, answer questions, provide responses based on the context of the conversation, and generate images in response to user requests.
 
-## NOTE
-
-
-This project has undergone a transformation and is now powered by React. Feel free to explore the revamped version by visiting the repository [here](https://github.com/LaughlinJames/chatbot)
 ## Features
 
 - Natural Language Processing (NLP) using OpenAI's API.
 - Interactive conversations with users.
 - Ability to answer questions and provide context-aware responses.
+- Simulated API management layer for 
+  - Context management
+  - Logging
+  - Routing requests to the appropriate API (OpenSSL or Firefly)
 - Fully customizable/tweakable
 
 ## Examples
@@ -50,7 +51,9 @@ Sign up for an account at OpenAI.
 Get your API key from the OpenAI dashboard.
 Create a .env file in the root directory and add your API key:
 ```dotenv
-API_KEY="YOUR KEY HERE"
+OPENAI_API_KEY=<YOUR_OPENAI_API_KEY>
+FIREFLY_SERVICES_CLIENT_ID=<YOUR_FIRE_FLY_SERVICES_CLIENT_ID>
+FIREFLY_SERVICES_CLIENT_SECRET=<YOUR_FIRE_FLY_SERVICES_CLIENT_SECRET>
 ```
 You may need to change the model in the backend/services/openaiService.js file depending on availability
 ```javascript
@@ -71,8 +74,6 @@ npm start
 ```
 And the index.html file should open in your browser
 
-## Contributing
-Contributions are welcome! If you find any issues or have suggestions for improvements, feel free to open an issue or submit a pull request.
 
 ## License
 This project is licensed under the MIT License - see the LICENSE file for details.
