@@ -14,7 +14,9 @@ function displayUserMessage(message) {
     chatBody.scrollTop = chatBody.scrollHeight;
 }
 
-function displayChatbotMessage(message) {
+function displayChatbotMessage(message, imageUrl = null) {
+    console.log('Chatbot response:', message);
+    console.log('Image URL:', imageUrl);
     if (isChatbotTyping) {
         // Remove the typing indicator when bot responds
         clearInterval(typingIntervalId);
@@ -28,6 +30,20 @@ function displayChatbotMessage(message) {
     const chatbotMessage = document.createElement('div');
     chatbotMessage.className = 'chatbot-message';
     chatbotMessage.innerText = message;
+
+    // If an image is provided, append it inside the same chatbot message
+    if (imageUrl) {
+      const img = document.createElement('img');
+      img.src = imageUrl;
+      img.alt = 'Generated image';
+      img.className = 'chatbot-image';
+      img.style.maxWidth = '100%';
+      img.style.borderRadius = '8px';
+      img.style.marginTop = '8px';
+      chatbotMessage.appendChild(document.createElement('br'));
+      chatbotMessage.appendChild(img);
+    }
+
     chatBody.appendChild(chatbotMessage);
     chatBody.scrollTop = chatBody.scrollHeight;
 }
@@ -67,8 +83,7 @@ async function sendMessage() {
     try {
         // Display the typing indicator while waiting for the OpenAI's response
         displayTypingIndicator();
-
-        const response = await fetch('http://127.0.0.1:3000/message', {
+        const response = await fetch('http://127.0.0.1:3000/api/openai/chat', {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json',
@@ -83,7 +98,9 @@ async function sendMessage() {
 
         const data = await response.json();
         const chatbotResponse = data.message;
-        displayChatbotMessage(chatbotResponse);
+        const imageUrl = data.image;
+
+        displayChatbotMessage(chatbotResponse, imageUrl);
     } catch (error) {
         console.error('Error:', error);
     }
