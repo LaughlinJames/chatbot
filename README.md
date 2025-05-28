@@ -15,7 +15,7 @@ This is a chat bot built with Node.js and Express, integrated with OpenAI's API 
 ## NOTE
 
 
-This project has undergone a transformation and is now powered by React. Feel free to explore the revamped version by visiting the repository [here](https://github.com/tyleroneil72/react-chat-bot)
+This project has undergone a transformation and is now powered by React. Feel free to explore the revamped version by visiting the repository [here](https://github.com/LaughlinJames/chatbot)
 ## Features
 
 - Natural Language Processing (NLP) using OpenAI's API.
@@ -33,7 +33,7 @@ This project has undergone a transformation and is now powered by React. Feel fr
 1. Clone the repository:
 
 ```bash
-git clone https://github.com/tyleroneil72/chat-bot.git
+git clone https://github.com/LaughlinJames/chatbot.git
 cd chat-bot
 ```
 
@@ -78,9 +78,9 @@ Contributions are welcome! If you find any issues or have suggestions for improv
 This project is licensed under the MIT License - see the LICENSE file for details.
 
 ## Acknowledgments
-This project was inspired by the capabilities of OpenAI's API.
+This project was inspired by 
+- the capabilities of OpenAI's API
+- the capabilities of Adobe's Firefly API
+- Tyler Oneil's chatbot (https://github.com/tyleroneil72/chat-bot)
 
-## Contact
-For any inquiries or questions, you can reach me at tyleroneildev@gmail.com
-or on my linkedin at https://ca.linkedin.com/in/tyler-oneil-dev
 
