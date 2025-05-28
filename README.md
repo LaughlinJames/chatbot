@@ -22,7 +22,8 @@ This is a chat bot built with Node.js and Express, integrated with OpenAI's API 
   - Context management
   - Logging
   - Routing requests to the appropriate API (OpenSSL or Firefly)
-- Fully customizable/tweakable
+  - Future features such as request queues, performance monitoring, and policy enforcement
+
 
 ## Examples
 ![image](https://github.com/LaughlinJames/chatbot/blob/main/sample-images/Image%20Generation.png)
