@@ -23,8 +23,9 @@ This project has undergone a transformation and is now powered by React. Feel fr
 - Ability to answer questions and provide context-aware responses.
 - Fully customizable/tweakable
 
-## Example
-![image](https://github.com/tyleroneil72/chat-bot/assets/43754564/9f63c52f-9229-49ef-8987-4e5d080f8672)
+## Examples
+![image](https://github.com/LaughlinJames/chatbot/blob/main/sample-images/Image%20Generation.png)
+![image](https://github.com/LaughlinJames/chatbot/blob/main/sample-images/NLP%20Request.png)
 
 
 ## Installation
