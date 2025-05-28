@@ -2,6 +2,7 @@ const express = require('express');
 const router = express.Router();
 const { Configuration, OpenAIApi } = require("openai");
 const { logChatEntry } = require('./logger'); // handles logging chat entries and responses 
+const { generateImageWithFirefly } = require('../services/fireflyService');
 const detectImageIntent = (prompt) => {
   return /image|illustration|draw|visualize|picture/i.test(prompt);
 };
@@ -23,8 +24,8 @@ let chatHistory = [
 ];
 
 router.post('/openai/chat', async (req, res) => {
-
-  const userInput = req.body.messages;
+ 
+  const userInput = req.body.message;
   if (!userInput || typeof userInput !== 'string' || userInput.trim() === '') {
     return res.status(400).json({ error: 'Invalid or empty message' });
   }
@@ -34,23 +35,36 @@ router.post('/openai/chat', async (req, res) => {
   const isImageRequest = detectImageIntent(userInput);
 
   if (isImageRequest) {
-    // Route to Firefly API (you’ll replace this with real implementation)
-    let responseMessage = '';
     try {
-      const imageUrl = 'https://example.com/generated-image.png'; // Placeholder for actual image URL
-      // const imageUrl = await callFireflyImageGeneration(userInput); // Implement this function
-      responseMessage = `Here is your generated image: ${imageUrl}`;
-      res.json({ message: responseMessage, image: imageUrl });
+      const imageObject = await generateImageWithFirefly(userInput);
+      const imageUrl = imageObject.outputs[0].image.url;
+  
+      const responseMessage = "Here is your generated image:";
+  
+      // console.log('[✅ RESPONSE TO FRONTEND]', {
+      //   message: responseMessage,
+      //   image: imageUrl
+      // });
+  
+      // Log before returning
+      logChatEntry(userInput, responseMessage);
+      chatHistory.push({ role: 'assistant', content: responseMessage });
+  
+      return res.json({ 
+        message: responseMessage, 
+        image: imageUrl 
+      });
+  
     } catch (err) {
+      const errorMsg = 'Failed to generate image. Please try again later.';
       console.error('[Firefly Error]', err.message);
-      responseMessage = 'Failed to generate image. Please try again later.';
-      res.status(500).json({ error: responseMessage });
+      logChatEntry(userInput, errorMsg);
+      chatHistory.push({ role: 'assistant', content: errorMsg });
+  
+      return res.status(500).json({ error: errorMsg });
     }
-    // Log the image request
-    logChatEntry(userInput, responseMessage);
-    chatHistory.push({ role: 'assistant', content: responseMessage });
-    return;
   }
+   
 
 
   try {
