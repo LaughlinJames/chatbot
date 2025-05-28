@@ -24,7 +24,6 @@ let chatHistory = [
 ];
 
 router.post('/openai/chat', async (req, res) => {
- 
   const userInput = req.body.message;
   if (!userInput || typeof userInput !== 'string' || userInput.trim() === '') {
     return res.status(400).json({ error: 'Invalid or empty message' });
@@ -38,21 +37,22 @@ router.post('/openai/chat', async (req, res) => {
     try {
       const imageObject = await generateImageWithFirefly(userInput);
       const imageUrl = imageObject.outputs[0].image.url;
+      const imageSeed = imageObject.outputs[0].seed;
   
-      const responseMessage = "Here is your generated image:";
+      const responseObject = {
+        message: "Here is your generated image:",
+        imageUrl: imageUrl,
+        seed: imageSeed
+      };
   
-      // console.log('[✅ RESPONSE TO FRONTEND]', {
-      //   message: responseMessage,
-      //   image: imageUrl
-      // });
+      // ✅ Store and log the full object, not just the message string
+      logChatEntry(userInput, responseObject);
+      chatHistory.push({ role: 'assistant', content: JSON.stringify(responseObject) });
   
-      // Log before returning
-      logChatEntry(userInput, responseMessage);
-      chatHistory.push({ role: 'assistant', content: responseMessage });
-  
-      return res.json({ 
-        message: responseMessage, 
-        image: imageUrl 
+      return res.json({
+        message: responseObject.message,
+        image: responseObject.imageUrl,
+        seed: responseObject.seed
       });
   
     } catch (err) {
