@@ -17,4 +17,16 @@ function logChatEntry(prompt, response) {
   });
 }
 
-module.exports = { logChatEntry };
+function logSystemEvent(eventName, details) {
+  const entry = {
+    timestamp: new Date().toISOString(),
+    systemEvent: eventName,
+    details
+  };
+
+  fs.appendFile(logFile, JSON.stringify(entry) + '\n', err => {
+    if (err) console.error('Failed to log system event:', err);
+  });
+}
+
+module.exports = { logChatEntry, logSystemEvent };

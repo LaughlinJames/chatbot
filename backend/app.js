@@ -1,6 +1,5 @@
 const path = require("path");
 require('dotenv').config();
-console.log('ENV CHECK:', process.env.OPENAI_API_KEY);
 const express = require("express");
 const bodyParser = require("body-parser");
 const cors = require("cors");

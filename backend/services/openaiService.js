@@ -10,6 +10,7 @@ const configuration = new Configuration({
 });
 const openai = new OpenAIApi(configuration);
 const axios = require('axios');
+const { logSystemEvent } = require('../services/loggingService'); // handles logging system events
 
 async function callGPT(chatMessages) {
   try {
@@ -42,6 +43,19 @@ async function isImageRequestViaLLM(prompt) {
   });
 
   const answer = response.data.choices[0].message.content.trim().toLowerCase();
+  logSystemEvent('ClassifierResult', { 
+    prompt, 
+    classifierAnswer: answer 
+  });
+
+  if (answer !== "yes" && answer !== "no") {
+    logSystemEvent('ClassifierUnexpectedAnswer', {
+      prompt,
+      rawAnswer: answer
+    });
+    return false;
+  }
+
   return answer === "yes";
 }
 

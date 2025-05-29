@@ -2,8 +2,8 @@ const express = require('express');
 const router = express.Router();
 const { Configuration, OpenAIApi } = require("openai");
 const { isImageRequestViaLLM, generateImageCaption } = require('../services/openaiService'); // handles LLM requests
-const { logChatEntry } = require('./logger'); // handles logging chat entries and responses 
-const { generateImageWithFirefly } = require('../services/fireflyService');
+const { logChatEntry } = require('../services/loggingService'); // handles logging chat entries and responses 
+const { generateImageWithFirefly } = require('../services/fireflyService'); // handles image generation with Adobe Firefly
 const detectImageIntent = (prompt) => {
   return /image|illustration|draw|visualize|picture/i.test(prompt);
 };
