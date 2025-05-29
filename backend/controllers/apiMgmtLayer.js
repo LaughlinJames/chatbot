@@ -43,8 +43,10 @@ router.post('/openai/chat', async (req, res) => {
       const imageUrl = imageObject.outputs[0].image.url;
       const imageSeed = imageObject.outputs[0].seed;
   
+      const responseMessage = await generateImageCaption(userInput);
+
       const responseObject = {
-        message: "Here is your generated image:",
+        message: responseMessage,
         imageUrl: imageUrl,
         seed: imageSeed
       };
@@ -117,6 +119,26 @@ async function isImageRequestViaLLM(prompt) {
   const answer = response.data.choices[0].message.content.trim().toLowerCase();
   return answer === "yes";
 }
+
+async function generateImageCaption(prompt) {
+  const response = await openai.createChatCompletion({
+    model: "gpt-3.5-turbo",
+    messages: [
+      {
+        role: 'system',
+        content: "You are a helpful assistant that rewrites image prompts into short, natural-sounding captions. Example: 'Prompt: a cat in a space suit' → 'Here’s an image of a cat in a space suit.'"
+      },
+      {
+        role: 'user',
+        content: `Prompt: ${prompt}`
+      }
+    ],
+    temperature: 0.7
+  });
+
+  return response.data.choices[0].message.content.trim();
+}
+
 
 
 module.exports = router;
