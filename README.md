@@ -52,7 +52,7 @@ npm install
 
 Sign up for an account at OpenAI.
 Get your API key from the OpenAI dashboard.
-Create a .env file in the root directory and add your API key:
+Create a .env file in the /backend directory and add your API key:
 ```dotenv
 OPENAI_API_KEY=<YOUR_OPENAI_API_KEY>
 FIREFLY_SERVICES_CLIENT_ID=<YOUR_FIRE_FLY_SERVICES_CLIENT_ID>
