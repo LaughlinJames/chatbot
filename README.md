@@ -16,8 +16,10 @@ This is a chat bot built with Node.js and Express, integrated with OpenAI's API 
 ## Features
 
 - Natural Language Processing (NLP) using OpenAI's API.
+- Image processing using Adobe's Firefy API.
 - Interactive conversations with users.
 - Ability to answer questions and provide context-aware responses.
+- Ability to respond to user prompts with images.
 - Simulated API management layer for 
   - Context management
   - Logging
