@@ -31,7 +31,11 @@ router.post('/openai/chat', async (req, res) => {
   chatHistory.push({ role: 'user', content: userInput });
 
   // Decide whether to generate an image or respond with text
-  const isImageRequest = detectImageIntent(userInput);
+  // using the LLM to classify the intent
+  // This is a more robust way to determine if the user wants an image
+  // rather than relying on simple keyword detection
+  const isImageRequest = await isImageRequestViaLLM(userInput);
+
 
   if (isImageRequest) {
     try {
@@ -72,18 +76,47 @@ router.post('/openai/chat', async (req, res) => {
       model: "gpt-3.5-turbo",
       messages: chatHistory,
     });
-
-    const reply = response.data.choices[0].message.content;
+  
+    let reply = response.data.choices[0].message.content.trim();
+  
+    // Intercept LLM false disclaimers and override
+    if (
+      /i\s(can('|’)t|cannot|unable)\s+(generate|create|make)\s+(images?|pictures?|visuals?)/i.test(reply)
+    ) {
+      reply = "Yes, I can generate images. Just ask me what you'd like to see!";
+    }
+  
     chatHistory.push({ role: 'assistant', content: reply });
-
-    // Log
     logChatEntry(userInput, reply);
-
+  
     res.json({ message: reply });
+  
   } catch (err) {
     console.error('[API Proxy Error]', err.response?.data || err.message);
     res.status(500).json({ error: 'Failed to contact OpenAI API' });
   }
+  
 });
+
+async function isImageRequestViaLLM(prompt) {
+  const response = await openai.createChatCompletion({
+    model: "gpt-3.5-turbo",
+    messages: [
+      {
+        role: 'system',
+        content: "You are a strict classifier that answers ONLY with 'yes' or 'no'. Do not explain. If the user is asking for a generated image, say 'yes'. If not, say 'no'."
+      },
+      {
+        role: 'user',
+        content: `Is the user asking to generate an image with this prompt: "${prompt}"`
+      }
+    ],
+    temperature: 0  // ensure deterministic output
+  });
+
+  const answer = response.data.choices[0].message.content.trim().toLowerCase();
+  return answer === "yes";
+}
+
 
 module.exports = router;
