@@ -4,6 +4,10 @@ const { Configuration, OpenAIApi } = require("openai");
 const { isImageRequestViaLLM, generateImageCaption } = require('../services/openaiService'); // handles LLM requests
 const { logChatEntry } = require('../services/loggingService'); // handles logging chat entries and responses 
 const { generateImageWithFirefly } = require('../services/fireflyService'); // handles image generation with Adobe Firefly
+
+const { enqueueRequest } = require('./requestQueue');
+
+
 const detectImageIntent = (prompt) => {
   return /image|illustration|draw|visualize|picture/i.test(prompt);
 };
@@ -40,7 +44,8 @@ router.post('/openai/chat', async (req, res) => {
 
   if (isImageRequest) {
     try {
-      const imageObject = await generateImageWithFirefly(userInput);
+      const imageObject = await enqueueRequest(() => generateImageWithFirefly(userInput));
+      
       const imageUrl = imageObject.outputs[0].image.url;
       const imageSeed = imageObject.outputs[0].seed;
   
@@ -75,10 +80,13 @@ router.post('/openai/chat', async (req, res) => {
 
 
   try {
-    const response = await openai.createChatCompletion({
-      model: "gpt-3.5-turbo",
-      messages: chatHistory,
-    });
+    const response = await requestQueue.enqueueRequest('openai', () =>
+      openai.createChatCompletion({
+        model: "gpt-3.5-turbo",
+        messages: chatHistory,
+      })
+    );
+    
   
     let reply = response.data.choices[0].message.content.trim();
   
