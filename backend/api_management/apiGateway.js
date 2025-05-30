@@ -44,7 +44,12 @@ router.post('/openai/chat', async (req, res) => {
 
   if (isImageRequest) {
     try {
-      const imageObject = await enqueueRequest(() => generateImageWithFirefly(userInput));
+      const imageObject = await enqueueRequest(
+        () => generateImageWithFirefly(userInput), 
+        {
+          prompt: userInput,
+        }
+      );
       
       const imageUrl = imageObject.outputs[0].image.url;
       const imageSeed = imageObject.outputs[0].seed;
