@@ -101,5 +101,21 @@ router.post('/openai/chat', async (req, res) => {
   
 });
 
+// Classify if a prompt is an image request
+router.post('/openai/classify-image-intent', async (req, res) => {
+  const { message } = req.body;
+
+  if (!message || typeof message !== 'string') {
+    return res.status(400).json({ error: 'Invalid or missing message' });
+  }
+
+  try {
+    const isImage = await isImageRequestViaLLM(message);
+    res.json({ isImage });
+  } catch (err) {
+    console.error('[Intent Classification Error]', err.message);
+    res.status(500).json({ error: 'Failed to classify intent' });
+  }
+});
 
 module.exports = router;

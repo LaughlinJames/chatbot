@@ -12,10 +12,15 @@ body {
 
 .chat-container {
   max-width: 500px;
+  min-width: 500px;
+  min-height: 200px;
   margin: 20px auto;
   border: 1px solid #ccc;
   border-radius: 8px;
-  overflow: hidden;
+  overflow: auto;
+  display: flex;
+  flex-direction: column;
+  resize: both;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
 }
 
@@ -32,6 +37,7 @@ body {
   height: 400px;
   overflow-y: auto;
   padding: 10px;
+  flex: auto;
 }
 
 .user-message, .chatbot-message {
