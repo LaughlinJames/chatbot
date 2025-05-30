@@ -1,4 +1,4 @@
-# Chat Bot using Node.js, Express, and OpenAI API
+# AI-Powered Chatbot with Image Generation
 
 [![License](https://img.shields.io/badge/License-MIT-blue.svg)](https://opensource.org/licenses/MIT)
 ![HTML](https://img.shields.io/badge/HTML-239120?style=for-the-badge&logo=html5&logoColor=white)
@@ -11,20 +11,17 @@
 
 ## Description
 
-This is a chat bot built with Node.js and Express, integrated with OpenAI's API to provide natural language processing capabilities and Adobe's Firefly API for image generation. The bot can engage in conversations with users, answer questions, provide responses based on the context of the conversation, and generate images in response to user requests.
+This full-stack chatbot integrates OpenAI’s GPT model for conversational intelligence and Adobe Firefly for image generation. It demonstrates enterprise-grade features including request queuing, rate limiting, system logging, and multimodal responses.
 
 ## Features
 
-- Natural Language Processing (NLP) using OpenAI's API.
-- Image processing using Adobe's Firefy API.
-- Interactive conversations with users.
-- Ability to answer questions and provide context-aware responses.
-- Ability to respond to user prompts with images.
-- Simulated API management layer for 
-  - Context management
-  - Logging
-  - Routing requests to the appropriate API (OpenSSL or Firefly)
-  - Future features such as request queues, performance monitoring, and policy enforcement
+- Unified API Gateway for OpenAI and Adobe Firefly
+- Multimodal support: text + image generation
+- Rate limiting with request queue for API compliance
+- System metrics endpoint for observability
+- Persistent logging of chat history and system events
+- Modular architecture for maintainability
+
 
 
 ## Examples
