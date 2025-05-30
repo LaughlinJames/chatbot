@@ -4,7 +4,7 @@ const { Configuration, OpenAIApi } = require("openai");
 const { isImageRequestViaLLM, generateImageCaption } = require('../services/openaiService'); // handles LLM requests
 const { logChatEntry } = require('../services/loggingService'); // handles logging chat entries and responses 
 const { generateImageWithFirefly } = require('../services/fireflyService'); // handles image generation with Adobe Firefly
-
+const { getMetrics, logRequestEnd, logRequestStart} = require('./apiMetrics');
 const { enqueueRequest } = require('./requestQueue');
 
 
@@ -29,6 +29,7 @@ let chatHistory = [
 ];
 
 router.post('/openai/chat', async (req, res) => {
+  logRequestStart(req, 'openai/chat');
   const userInput = req.body.message;
   if (!userInput || typeof userInput !== 'string' || userInput.trim() === '') {
     return res.status(400).json({ error: 'Invalid or empty message' });
@@ -79,13 +80,15 @@ router.post('/openai/chat', async (req, res) => {
       chatHistory.push({ role: 'assistant', content: errorMsg });
   
       return res.status(500).json({ error: errorMsg });
+    } finally {
+      logRequestEnd(req, 'openai/chat', 'image');
     }
   }
    
 
 
   try {
-    const response = await requestQueue.enqueueRequest('openai', () =>
+    const response = await enqueueRequest(() =>
       openai.createChatCompletion({
         model: "gpt-3.5-turbo",
         messages: chatHistory,
@@ -110,6 +113,8 @@ router.post('/openai/chat', async (req, res) => {
   } catch (err) {
     console.error('[API Proxy Error]', err.response?.data || err.message);
     res.status(500).json({ error: 'Failed to contact OpenAI API' });
+  } finally {
+    logRequestEnd(req, 'openai/chat', 'text');
   }
   
 });
@@ -129,6 +134,10 @@ router.post('/openai/classify-image-intent', async (req, res) => {
     console.error('[Intent Classification Error]', err.message);
     res.status(500).json({ error: 'Failed to classify intent' });
   }
+});
+
+router.get('/metrics', (req, res) => {
+  res.json(getMetrics());
 });
 
 module.exports = router;
