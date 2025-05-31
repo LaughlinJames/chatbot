@@ -11,7 +11,7 @@
 
 ## Description
 
-This full-stack chatbot integrates OpenAI’s GPT model for conversational intelligence and Adobe Firefly for image generation. It demonstrates enterprise-grade features including request queuing, rate limiting, system logging, and multimodal responses.
+This full-stack chatbot integrates OpenAI’s GPT model for conversational intelligence and Adobe Firefly for image generation. It demonstrates enterprise-grade features including request queuing, rate limiting, system logging, chat history persistence and multimodal responses.
 
 ## Features
 
@@ -20,6 +20,7 @@ This full-stack chatbot integrates OpenAI’s GPT model for conversational intel
 - Rate limiting with request queue for API compliance
 - System metrics endpoint for observability
 - Persistent logging of chat history and system events
+- Persistent chat history enabling contextual recall across restarts
 - Modular architecture for maintainability
 
 
