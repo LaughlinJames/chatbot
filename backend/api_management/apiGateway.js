@@ -6,6 +6,7 @@ const { logChatEntry } = require('../services/loggingService'); // handles loggi
 const { generateImageWithFirefly } = require('../services/fireflyService'); // handles image generation with Adobe Firefly
 const { getMetrics, logRequestEnd, logRequestStart} = require('./apiMetrics');
 const { enqueueRequest } = require('./requestQueue');
+const chatHistoryService = require('../services/chatHistoryService');
 
 
 const detectImageIntent = (prompt) => {
@@ -18,24 +19,23 @@ const configuration = new Configuration({
 
 const openai = new OpenAIApi(configuration);
 
-// Initialize chat history with a system message
-// This will help maintain context across messages
-// and ensure the chatbot behaves consistently
-let chatHistory = [
-  {
-    role: 'system',
-    content: "You are a helpful chatbot that responds concisely and like a human. Use prior messages to maintain context. Avoid disclaimers."
-  }
-];
+
 
 router.post('/openai/chat', async (req, res) => {
+
   logRequestStart(req, 'openai/chat');
   const userInput = req.body.message;
   if (!userInput || typeof userInput !== 'string' || userInput.trim() === '') {
     return res.status(400).json({ error: 'Invalid or empty message' });
   }
-  chatHistory.push({ role: 'user', content: userInput });
-
+  // chatHistory.push({ role: 'user', content: userInput });
+  const userId = req.body.userId || 'defaultUserId'; // replace with actual user/session logic if available
+    // Initialize chat history with a system message
+  // This will help maintain context across messages
+  // and ensure the chatbot behaves consistently
+  const chatHistory = chatHistoryService.getHistory(userId);
+  chatHistoryService.saveMessage(userId, { role: 'user', content: userInput });
+  
   // Decide whether to generate an image or respond with text
   // using the LLM to classify the intent
   // This is a more robust way to determine if the user wants an image
@@ -65,8 +65,11 @@ router.post('/openai/chat', async (req, res) => {
   
       // ✅ Store and log the full object, not just the message string
       logChatEntry(userInput, responseObject);
-      chatHistory.push({ role: 'assistant', content: JSON.stringify(responseObject) });
-  
+      // chatHistory.push({ role: 'assistant', content: JSON.stringify(responseObject) });
+      chatHistoryService.saveMessage(userId, { role: 'assistant', content: responseObject.message } );
+      chatHistoryService.saveMessage(userId, { role: 'assistant', content: "The image URL is " + responseObject.imageUrl } );
+      chatHistoryService.saveMessage(userId, { role: 'assistant', content: "The image seed is " + responseObject.seed } );
+
       return res.json({
         message: responseObject.message,
         image: responseObject.imageUrl,
@@ -77,7 +80,7 @@ router.post('/openai/chat', async (req, res) => {
       const errorMsg = 'Failed to generate image. Please try again later.';
       console.error('[Firefly Error]', err.message);
       logChatEntry(userInput, errorMsg);
-      chatHistory.push({ role: 'assistant', content: errorMsg });
+      // chatHistory.push({ role: 'assistant', content: errorMsg });
   
       return res.status(500).json({ error: errorMsg });
     } finally {
@@ -105,9 +108,11 @@ router.post('/openai/chat', async (req, res) => {
       reply = "Yes, I can generate images. Just ask me what you'd like to see!";
     }
   
-    chatHistory.push({ role: 'assistant', content: reply });
+    // chatHistory.push({ role: 'assistant', content: reply });
     logChatEntry(userInput, reply);
-  
+    const replyObj = { role: 'assistant', content: reply };
+    chatHistoryService.saveMessage(userId, replyObj );
+
     res.json({ message: reply });
   
   } catch (err) {

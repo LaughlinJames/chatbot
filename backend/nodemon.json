@@ -1,3 +1,8 @@
 {
- "ignore": ["chat-log.json", "chat-log.txt", "./logs/*"]
+ "ignore": [
+    "chat-log.json", 
+    "chat-log.txt", 
+    "./logs/*", 
+    "chat_history", 
+    "data/chat_history"]
 }

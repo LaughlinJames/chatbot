@@ -1,5 +1,6 @@
 .env
 backend/node_modules/
 backend/logs/chat-log.json
+backend/data/*
 chat-log.json
 .DS_Store
