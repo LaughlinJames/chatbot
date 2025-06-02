@@ -30,6 +30,12 @@ This full-stack chatbot integrates OpenAI’s GPT model for conversational intel
 ![image](https://github.com/LaughlinJames/chatbot/blob/main/sample-images/NLP%20Request.png)
 
 
+
+## Architecture
+<img width="1362" alt="Untitled_Workspace_-_Creately" src="https://github.com/user-attachments/assets/fd8ed23e-d307-487b-9841-4a268725d606" />
+
+
+
 ## Installation
 
 1. Clone the repository:
